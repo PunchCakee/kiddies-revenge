@@ -11,7 +11,16 @@
 ##############################################################################################################################################
 import time
 import os
-def thetasploit(rhost):
+import ctypes, sys
+
+def is_admin(): 
+    try:
+        return ctypes.windll.shell32.IsUserAnAdmin()
+    except:
+        return False
+ 
+
+def main(rhost):
     if len(rhost) <= 15:
         print(f"Target ip is {rhost} do you want to proceed? ")
         yesorno = input("Y/N: ")
@@ -35,4 +44,8 @@ def thetasploit(rhost):
 
 # main guard #
 if __name__ == '__main__':
-    thetasploit(input("SET TARGET IP: "))
+    if is_admin():
+        main(input("SET TARGET IP: "))
+    else:
+        # asks for elevated perms
+        ctypes.windll.shell32.ShellExecuteW(None, "runas", sys.executable, " ".join(sys.argv), None, 1)
